@@ -1,0 +1,26 @@
+#!/bin/bash
+# Public Wi-Fi Portal: find the captive-portal login page and open it,
+# bypassing Chrome's HTTPS upgrade / Secure DNS problems with the redirect.
+title="Public Wi-Fi Portal"
+note() { timeout 5 notify-send -a "$title" -i network-wireless "$title" "$1" 2>/dev/null || echo "$1"; }
+
+for probe in http://neverssl.com/ http://fedoraproject.org/static/hotspot.txt; do
+    url=$(curl -s -m 8 -o /dev/null -w '%{redirect_url}' "$probe")
+    [ -n "$url" ] && break
+done
+
+# Some portals rewrite the page instead of redirecting: Fedora's check file
+# should read exactly "OK".
+if [ -z "$url" ]; then
+    body=$(curl -s -m 8 http://fedoraproject.org/static/hotspot.txt)
+    [ -n "$body" ] && [ "$body" != "OK" ] && url=http://neverssl.com/
+fi
+
+if [ -n "$url" ]; then
+    note "Opening Wi-Fi login page…"
+    xdg-open "$url"
+elif curl -s -m 8 -o /dev/null https://www.google.com/; then
+    note "You're already online; no login page needed."
+else
+    note "No login page found and no internet. Check you're connected to the Wi-Fi network, then try again."
+fi

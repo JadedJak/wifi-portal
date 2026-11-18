@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Public Wi-Fi Portal
+GenericName=Wi-Fi Login Page
+Comment=Open the sign-in page for hotel, café and airport Wi-Fi
+Exec=wifi-portal
+Icon=network-wireless-100
+Terminal=false
+Categories=Network;
+Keywords=captive;portal;hotspot;wifi;login;starbucks;
